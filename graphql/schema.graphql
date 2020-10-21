@@ -8,7 +8,7 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 scalar DateTimeTz @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTimeTz")
 
 type Query {
-    users: [User!]! @paginate(defaultCount: 10)
+    users: [User!]! @all
     user(id: ID @eq): User @find
     addresses: [Address!]! @all
     address(id: Int! @eq): Address @find
@@ -18,16 +18,26 @@ type User {
     id: ID!
     name: String!
     cpf: String!
-    phone: String!
-    gender: String!
-    addresses: [Address!]! @hasMany
+    phone: String
+    gender: String
+    addresses: [Address!] @hasMany
 }
 
 type Address {
     id: ID!
     street: String!
-    zipcode: String!
+    zipcode: String
     city: String!
     state: String!
-    user_id: User! @belongsTo
+    user_id: Int!
+}
+
+type Mutation {
+  createUser(name: String!, cpf: String!, phone: String, gender: String): User! @create
+  updateUser(id: ID!, name: String, cpf: String, phone: String, gender: String): User! @update
+  deleteUser(id: ID!): User @delete
+
+  createAddress(user_id: ID!, street: String!, zipcode: String, city: String!, state: String!): Address! @create
+  updateAddress(id: ID!, user_id: ID, street: String, zipcode: String, city: String, state: String): Address! @update
+  deleteAddress(id: ID!): Address @delete
 }
